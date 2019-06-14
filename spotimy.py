@@ -15,18 +15,41 @@ from json.decoder import JSONDecodeError
 
 ### Vars
 spotify=''
-old_data=''
-new_data=''
+old_data=[]
+new_data=[]
 
 
 ### Helper functions
 def print_json(json_var):
     print(json.dumps(json_var, sort_keys=True, indent=4))
 
+def add_json_to_data(tracks):
+    # TODO: implement
+    for i, track in enumerate(tracks['items']):
+        new_entry="%s-%s" % (track['name'], track['artists'][0]['name'])
+        new_data.append(new_entry)
+
+def show_tracks(tracks):
+    for i, item in enumerate(tracks['items']):
+    track = item['track']
+    print("   %d    %-20s -  %s" % (i, track['artists'][0]['name'], track['name']))
+    # print("              %s" % (track['images']))
+    print("                  %s" % (track['album']['images'][0]['url']))
+
+def sort_new_data(new_data):
+    new_data.sort()
+
 ### General functions
+def readOldData(data):
+    with open("old_data.txt") as infile:
+        old_data = infile.read().splitlines()
+
 def authenticate():
-    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET))
-    return null
+    try:
+        spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET))
+        return true
+    except:
+        return false
 
 def readData():
     playlists = sp.user_playlists(SPOTIFY_USERNAME)
@@ -34,50 +57,51 @@ def readData():
         if playlist['owner']['id'] == SPOTIFY_USERNAME:
             results = sp.user_playlist(SPOTIFY_USERNAME, playlist['id'], fields="tracks,next")
             tracks = results['tracks']
-            # add to json to new_data
+            # TODO: add to json to new_data
+            add_json_to_data(tracks)
             
             while tracks['next']:
                 tracks = sp.next(tracks)
-                # add to json to new_data
+                # TODO: add to json to new_data
+                add_json_to_data(tracks)
 
+    sort_new_data(new_data)
     return null
 
-def diffData():
+def diffData(old_data, new_data):
+    result = list(set(old_data) - set(new_data))
+    # if there are differences, apply them, else do noting
+    if len(result) > 0:
+        for item in enumerate(result)
+            if item in old_data && item not in new_data:
+                # remove item from old_data
+                removeOldSong(old_data)
+            elif item not in old_data && item in new_data:
+                # add item to old_data
+                downloadNewSong()
+                addNewSong(old_data)
+            else:
+                # idk
+    else:
+        print("there are no differences")
+
+
+def downloadNewSong():
     return null
 
-def dataChanged():
+def removeOldSong():
     return null
 
-def getNewSongs():
-    return null
-
-def downloadNewSongs():
-    return null
-
-def getRemovedSongs():
-    return null
-
-def removeOldSongs():
-    return null
-
-def saveNewData():
-    return null
-
-
+def saveOldData(data):
+    with open("old_data.txt", "w") as outfile:
+        for item in data:
+            outfile.write("%s\n" % item)
 
 
 ### Code structure
 if authenticate():
     readData()
-    diffData()
-    if dataChanged():
-        getNewSongs()
-        downloadNewSongs()
-        getRemovedSongs()
-        removeOldSongs()
-        saveNewData()
-    else:
-        print("no new songs")
+    diffData():
 else:
     print("could not authenticate")
 
