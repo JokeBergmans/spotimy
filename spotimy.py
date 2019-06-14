@@ -9,9 +9,6 @@ from json.decoder import JSONDecodeError
 # export SPOTIPY_CLIENT_ID='your-spotify-client-id'
 # export SPOTIPY_CLIENT_SECRET='your-spotify-client-secret'
 # export SPOTIFY_USERNAME='your-spotify-username-id' # usually a long string of alphanumeric characters
-### youtube-dl is required, to install it, run this in a terminal
-# sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
-# sudo chmod a+rx /usr/local/bin/youtube-dl
 
 ### Vars
 spotify=''
@@ -73,10 +70,10 @@ def diffData(old_data, new_data):
     # if there are differences, apply them, else do noting
     if len(result) > 0:
         for item in enumerate(result)
-            if item in old_data && item not in new_data:
+            if item in old_data and item not in new_data:
                 # remove item from old_data
                 removeOldSong(old_data)
-            elif item not in old_data && item in new_data:
+            elif item not in old_data and item in new_data:
                 # add item to old_data
                 downloadNewSong()
                 addNewSong(old_data)
