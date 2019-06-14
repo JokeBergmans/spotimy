@@ -1,6 +1,7 @@
 import os
 import json
 import spotipy
+import youtube_dl
 
 from spotipy.oauth2 import SpotifyClientCredentials
 from json.decoder import JSONDecodeError
@@ -83,8 +84,11 @@ def diffData(old_data, new_data):
         print("there are no differences")
 
 
-def downloadNewSong():
-    return null
+def downloadNewSong(track):
+    command = "youtube-dl -o \'%(title)s.%(ext)s\' --extract-audio --audio-format mp3 \"ytsearch1:%s %s\" > /dev/null" % (track['artists'][0]['name'], track['name'])
+    os.system(command)
+
+
 
 def removeOldSong():
     return null
