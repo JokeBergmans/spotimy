@@ -1,2 +1,6 @@
 # Ignore folders
 venv/
+.idea/*
+music_downloads/
+old_data.txt
+
