@@ -2,6 +2,7 @@ import os
 import json
 import spotipy
 import youtube_dl
+import subprocess
 
 from spotipy.oauth2 import SpotifyClientCredentials
 from json.decoder import JSONDecodeError
@@ -48,9 +49,11 @@ def download_new_song(track):
     # TODO: check for quotes and other special characters in track name and filter these out
     track = track.replace("\'", "").replace("/", " ").replace("\\", "")
     print("Downloading %s" % track)
-    command = "youtube-dl -o \"music_downloads/%s" % track + ".%(ext)s\"" \
+    command = "youtube-dl -oe \"music_downloads/%s" % track + ".%(ext)s\"" \
               + " --extract-audio --audio-format mp3 \"ytsearch1:%s\" > /dev/null" % track
-    os.system(command)
+    # os.system(command)
+    trackName = subprocess.check_output(command)
+    return trackName
 
 
 def add_new_song(track, old_data):
@@ -122,8 +125,8 @@ def main():
                 remove_old_song(item, old_data)
             elif item not in old_data and item in new_data:
                 # add item to old_data
-                download_new_song(item)
-                add_new_song(item, old_data)
+                trackName = download_new_song(item)
+                add_new_song(trackName, old_data)
             else:
                 # idk
                 print("Error")
